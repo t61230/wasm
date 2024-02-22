@@ -1,8 +1,14 @@
 add_rules("mode.debug", "mode.release")
 
+-- 将C/C++代码编译为WebAssembly 依赖emscripten工具链
+-- 1. 安装emscripten工具链(Ubuntu 可以直接通过apt命令安装)
+-- Ubuntu/Debian: apt install  emscripten
+-- 官方安装说明： https://emscripten.org/docs/getting_started/downloads.html
 target("demo")
     set_kind("binary")
     add_files("src/*.cpp")
+    add_packages("emscripten") --关键：此处导入emscripten sdk,如果通过官方的配置方式安装emscripten,则不需要此行
+    add_ldflags("--bind") --关键：添加--bind参数，将C++代码绑定到JavaScript
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

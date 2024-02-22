@@ -1,16 +1,15 @@
 set_project("CPP_Xmake_Env_Template")
 set_languages("c99", "cxx17")
 
---v831工具链()
---命令：xmake f -v -p linux -a armv7 --toolchain=v831-toolchain --cross=arm-openwrt-linux-muslgnueabi- --cxflags="-mfloat-abi=hard -mfpu=neon-vfpv4"
-toolchain("v831-toolchain")
-    set_kind("standalone")
-    set_sdkdir("/opt/v83x_linux_x86_python3.8_toolchain/toolchain-sunxi-musl/toolchain")
-toolchain_end()
+--切换EMCC工具链(需要先安装Emscripten) apt install emscripten
+-- xmake f -p wasm
 
 -- 编译模式 --
 -- 模式切换：xmake f -m debug/release
 add_rules("mode.debug", "mode.release")
+
+-- 生成调试信息 --
+-- xmake project -k compile_commands
 
 -- 程序检查工具 --
 -- 命令：xmake f -m debug -v --policies=build.sanitizer.address,build.sanitizer.undefined
@@ -29,30 +28,5 @@ includes("*/xmake.lua")
 add_repositories("local-repo xmake-repo")
 
 -- 导入外部依赖包
--- add_requires("boost")
+add_requires("emscripten") -- Emscripten是一个WebAssembly工具链,提供必要的绑定和API
 
--- 脚本域 --
--- 安装V831交叉编译工具链：xmake run install_v831_toolchain
-target("install_v831_toolchain")
-    set_default("false")
-    set_kind("phony") --假的目标，只是用来执行命令 https://xmake.io/#/zh-cn/manual/project_target?id=设置目标编译类型
-    on_run(function(target)
-        import("privilege.sudo")
-        -- 生成配置文件
-        if not os.isdir("/opt/v83x_linux_x86_python3.8_toolchain") then
-            sudo.exec("apt update")
-            sudo.exec("apt install android-tools-adb cmake git make rsync uuid-dev autopoint -y")
-            os.exec("wget http://mirrors.kernel.org/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb")
-            sudo.exec("dpkg -i libffi6_3.2.1-8_amd64.deb")
-            os.exec("rm libffi6_3.2.1-8_amd64.deb")
-            -- os.exec("wget https://github.com/sipeed/MaixPy3/releases/download/20210613/v83x_linux_x86_python3.8_toolchain.zip")
-            os.exec("wget https://stream.justasite.cn:12280/backup/public/-/raw/main/v83x_linux_x86_python3.8_toolchain.zip")
-            os.exec("unzip v83x_linux_x86_python3.8_toolchain.zip")
-            os.exec("rm v83x_linux_x86_python3.8_toolchain.zip")
-            sudo.exec("mkdir /opt/v83x_linux_x86_python3.8_toolchain")
-            sudo.exec("mv v83x_linux_x86_python3.8_toolchain /opt/")
-            if os.isfile("/usr/lib/libgcc_s.so.1") then
-                sudo.exec("rm /usr/lib/libgcc_s.so.1")
-            end
-        end
-    end)

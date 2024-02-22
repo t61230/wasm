@@ -1,10 +1,26 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <string>
+#include <emscripten/bind.h>
 
-using namespace std;
+using namespace emscripten;
 
-int main()
+// int main()
+// {
+//     while(true)
+//     {
+//         std::cout << "Hello, World!" << std::endl;
+//         std::this_thread::sleep_for(std::chrono::seconds(1));
+//     }
+//     return 0;
+// }
+
+std::string hello()
 {
-    char a[10];
-    a[10] = 0;
-    return 0;
+    return "Hello, World!";
+}
+
+EMSCRIPTEN_BINDINGS(test_module){
+    function("hello",&hello);
 }

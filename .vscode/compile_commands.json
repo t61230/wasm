@@ -1,2 +1,6 @@
 [
-]
+{
+  "directory": "/home/ubuntu/project/wasm",
+  "arguments": ["/home/ubuntu/.xmake/packages/e/emscripten/3.1.42/dd3d2d23da064881a567862105d240dc/upstream/emscripten/emcc", "-c", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "--bind", "-DNDEBUG", "-o", "build/.objs/demo/wasm/wasm32/release/demo/src/main.cpp.o", "demo/src/main.cpp"],
+  "file": "demo/src/main.cpp"
+}]
